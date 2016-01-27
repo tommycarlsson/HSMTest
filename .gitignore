@@ -328,3 +328,4 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+vs14/SmTest/Test/

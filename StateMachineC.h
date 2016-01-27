@@ -11,6 +11,12 @@
 
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+//==============================================================================
+
 // This section should be defined elsewhere.
 
 /// Define this if tracing SHALL occur.
@@ -132,5 +138,8 @@ State StateMachine_topState(OWNER owner, Signal e);
 State StateMachine_handled(OWNER owner, Signal e);
 
 //==============================================================================
+#ifdef __cplusplus
+}
+#endif
 #endif /* BASE_STATE_MACHINE_H_ */
 //==============================================================================
