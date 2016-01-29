@@ -44,6 +44,7 @@ extern "C" {
 	{
 		SM_START = SM_USER_START,
 		SM_STOP,
+        SM_BRINGUP_TIMEOUT,
 		SM_TIMEOUT,
 		SM_PRESENT,
 		SM_NOT_PRESENT,
@@ -61,11 +62,11 @@ extern "C" {
 		SM_PING_INQ,
 		SM_PING_TIMEOUT,
 		SM_DEVICE_ERR,
-		SM_TAKE_INQ,
+        SM_PARAM_INQ,
 		SM_TEMP_INQ,
 		SM_PARAM_TIMEOUT,
 		SM_UART_ERR,
-	} MotorSignals;
+	} MotorSignal;
 
 	Motor* Motor_ctor();
 	void Motor_dtor(Motor* motor);

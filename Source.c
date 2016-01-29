@@ -96,8 +96,8 @@ static State Motor_starting(OWNER owner, Signal e)
 		printf("starting-SM_PRESENT ");
 		StateMachine_transition(t->sm, t->powered);
 		return HANDLED();
-	case SM_TIMEOUT:
-		printf("starting-SM_TIMEOUT ");
+	case SM_BRINGUP_TIMEOUT:
+		printf("starting-SM_BRINGUP_TIMEOUT ");
 		return HANDLED();
 	default:
 		break;
@@ -118,41 +118,36 @@ static State Motor_powered(OWNER owner, Signal e)
 	case SM_EXIT:
 		printf("powered-SM_EXIT ");
 		return HANDLED();
-	case SM_STATUS_OK:
-		printf("powered-SM_STATUS_OK ");
-		StateMachine_transition(t->sm, t->idle);
-		return HANDLED();
-	case SM_STATUS_EE:
-		printf("powered-SM_STATUS_EE ");
-		StateMachine_transition(t->sm, t->off);
-		return HANDLED();
-	case SM_STATUS_DE:
-		printf("powered-SM_STATUS_DE ");
-		StateMachine_transition(t->sm, t->off);
-		return HANDLED();
-	case SM_STATUS_TEMP:
-		printf("powered-SM_STATUS_TEMP ");
-		StateMachine_transition(t->sm, t->off);
-		return HANDLED();
-	case SM_STATUS_ERR:
-		printf("powered-SM_STATUS_ERR ");
-		StateMachine_transition(t->sm, t->off);
-		return HANDLED();
-	case SM_STOP:
-		printf("powered-SM_STOP ");
-		StateMachine_transition(t->sm, t->off);
-		return HANDLED();
-	case SM_NOT_PRESENT:
-		printf("powered-SM_NOT_PRESENT ");
+	case SM_BRINGUP_TIMEOUT:
+		printf("powered-SM_BRINGUP_TIMEOUT ");
 		if (t->run)
 		{
-			StateMachine_transition(t->sm, t->starting);
+			StateMachine_transition(t->sm, t->powered);
 		}
 		else
 		{
 			StateMachine_transition(t->sm, t->off);
 		}
 		return HANDLED();
+	case SM_STATUS_OK:
+		printf("powered-SM_STATUS_OK ");
+		StateMachine_transition(t->sm, t->idle);
+		return HANDLED();
+	case SM_STOP:
+		printf("powered-SM_STOP ");
+		StateMachine_transition(t->sm, t->off);
+		return HANDLED();
+    case SM_NOT_PRESENT:
+        printf("powered-SM_NOT_PRESENT ");
+        if (t->run)
+        {
+            StateMachine_transition(t->sm, t->starting);
+        }
+        else
+        {
+            StateMachine_transition(t->sm, t->off);
+        }
+        return HANDLED();
 	default:
 		break;
 	}
@@ -175,8 +170,8 @@ static State Motor_idle(OWNER owner, Signal e)
 	case SM_TEMP_INQ:
 		printf("idle-SM_TEMP_INQ ");
 		return HANDLED();
-	case SM_TAKE_INQ:
-		printf("idle-SM_TAKE_INQ ");
+	case SM_PARAM_INQ:
+		printf("idle-SM_PARAM_INQ ");
 		return HANDLED();
 	case SM_PING_INQ:
 		printf("idle-SM_PING_INQ ");
@@ -196,6 +191,18 @@ static State Motor_idle(OWNER owner, Signal e)
 		printf("idle-SM_PING_TIMEOUT ");
 		StateMachine_transition(t->sm, t->powered);
 		return HANDLED();
+    case SM_STATUS_EE:
+        printf("powered-SM_STATUS_EE ");
+        StateMachine_transition(t->sm, t->off);
+        return HANDLED();
+    case SM_STATUS_DE:
+        printf("powered-SM_STATUS_DE ");
+        StateMachine_transition(t->sm, t->off);
+        return HANDLED();
+    case SM_STATUS_TEMP:
+        printf("powered-SM_STATUS_TEMP ");
+        StateMachine_transition(t->sm, t->off);
+        return HANDLED();
 	default:
 		break;
 	}
@@ -257,6 +264,10 @@ static State Motor_preAmpOffOrdered(OWNER owner, Signal e)
 		printf("preAmpOffOrdered-SM_TIMEOUT ");
 		StateMachine_transition(t->sm, t->preAmpOffOrdered);
 		return HANDLED();
+    case SM_PREA_ON:
+        printf("preAmpOffOrdered-SM_PREA_ON ");
+        StateMachine_transition(t->sm, t->preAmpOnOrdered);
+        return HANDLED();
 	default:
 		break;
 	}
@@ -380,7 +391,7 @@ static State Motor_active(OWNER owner, Signal e)
 		return HANDLED();
 	case SM_STATUS_ED:
 		printf("active-SM_STATUS_ED ");
-		StateMachine_transition(t->sm, t->powered);
+		StateMachine_transition(t->sm, t->powAmpOnOrdered);
 		return HANDLED();
 	default:
 		break;
