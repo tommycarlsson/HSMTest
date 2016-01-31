@@ -167,6 +167,14 @@ static State Motor_idle(OWNER owner, Signal e)
 	case SM_EXIT:
 		printf("idle-SM_EXIT ");
 		return HANDLED();
+    case SM_STOP:
+        printf("idle-SM_STOP ");
+        StateMachine_transition(t->sm, t->off);
+        return HANDLED();
+    case SM_NOT_PRESENT:
+        printf("idle-SM_NOT_PRESENT ");
+        StateMachine_transition(t->sm, t->off);
+        return HANDLED();
 	case SM_TEMP_INQ:
 		printf("idle-SM_TEMP_INQ ");
 		return HANDLED();
@@ -207,7 +215,7 @@ static State Motor_idle(OWNER owner, Signal e)
 		break;
 	}
 
-	return t->powered;
+	return StateMachine_topState(t, SM_DUMMY);
 }
 
 static State Motor_preAmpOnOrdered(OWNER owner, Signal e)

@@ -100,9 +100,6 @@ static void test_starting(void **state)
 
     IINVOKE(starting, SM_START, motor->starting);
     IINVOKE(starting, SM_STOP, motor->off);
-    motor->run = false;
-    IINVOKE(starting, SM_BRINGUP_TIMEOUT, motor->off);
-    motor->run = true;
     IINVOKE(starting, SM_BRINGUP_TIMEOUT, motor->starting);
     IINVOKE(starting, SM_TIMEOUT, motor->starting);
     IINVOKE(starting, SM_PRESENT, motor->powered);
@@ -205,10 +202,7 @@ static void test_idle(void **state)
     IINVOKE(idle, SM_BRINGUP_TIMEOUT, motor->starting);
     IINVOKE(idle, SM_TIMEOUT,         motor->idle);
     IINVOKE(idle, SM_PRESENT,         motor->idle);
-    motor->run = false;
     IINVOKE(idle, SM_NOT_PRESENT,     motor->off);
-    motor->run = true;
-    IINVOKE(idle, SM_NOT_PRESENT,     motor->starting);
     IINVOKE(idle, SM_PREA_ON,         motor->preAmpOnOrdered);
     IINVOKE(idle, SM_PREA_OFF,        motor->idle);
     IINVOKE(idle, SM_POWA_ON,         motor->idle);
@@ -233,101 +227,121 @@ static void test_preAmpOnOrdered(void **state)
 {
     Motor* motor = *state;
 
-    IINVOKE(preAmpOnOrdered, SM_START,         motor->preAmpOnOrdered);
-    IINVOKE(preAmpOnOrdered, SM_STOP,          motor->off);
-    IINVOKE(preAmpOnOrdered, SM_TIMEOUT,       motor->idle);
-    IINVOKE(preAmpOnOrdered, SM_PRESENT,       motor->preAmpOnOrdered);
-    motor->run = false;
-    IINVOKE(preAmpOnOrdered, SM_NOT_PRESENT,   motor->off);
-    motor->run = true;
-    IINVOKE(preAmpOnOrdered, SM_NOT_PRESENT,   motor->starting);
-    IINVOKE(preAmpOnOrdered, SM_PREA_ON,       motor->preAmpOnOrdered);
-    IINVOKE(preAmpOnOrdered, SM_PREA_OFF,      motor->idle);
-    IINVOKE(preAmpOnOrdered, SM_POWA_ON,       motor->preAmpOnOrdered);
-    IINVOKE(preAmpOnOrdered, SM_POWA_OFF,      motor->preAmpOnOrdered);
-    IINVOKE(preAmpOnOrdered, SM_STATUS_OK,     motor->preAmpOnOrdered);
-    IINVOKE(preAmpOnOrdered, SM_STATUS_ERR,    motor->powered);
-    IINVOKE(preAmpOnOrdered, SM_STATUS_DD,     motor->preAmpOnOrdered);
-    IINVOKE(preAmpOnOrdered, SM_STATUS_ED,     motor->armed);
-    IINVOKE(preAmpOnOrdered, SM_STATUS_EE,     motor->off);
-    IINVOKE(preAmpOnOrdered, SM_STATUS_DE,     motor->off);
-    IINVOKE(preAmpOnOrdered, SM_STATUS_TEMP,   motor->off);
-    IINVOKE(preAmpOnOrdered, SM_PING_INQ,      motor->preAmpOnOrdered);
-    IINVOKE(preAmpOnOrdered, SM_PING_TIMEOUT,  motor->powered);
-    IINVOKE(preAmpOnOrdered, SM_DEVICE_ERR,    motor->off);
-    IINVOKE(preAmpOnOrdered, SM_PARAM_INQ,     motor->preAmpOnOrdered);
-    IINVOKE(preAmpOnOrdered, SM_TEMP_INQ,      motor->preAmpOnOrdered);
-    IINVOKE(preAmpOnOrdered, SM_PARAM_TIMEOUT, motor->preAmpOnOrdered);
-    IINVOKE(preAmpOnOrdered, SM_UART_ERR,      motor->off);
+    IINVOKE(preAmpOnOrdered, SM_START,           motor->preAmpOnOrdered);
+    IINVOKE(preAmpOnOrdered, SM_STOP,            motor->off);
+    IINVOKE(preAmpOnOrdered, SM_BRINGUP_TIMEOUT, motor->preAmpOnOrdered);
+    IINVOKE(preAmpOnOrdered, SM_TIMEOUT,         motor->idle);
+    IINVOKE(preAmpOnOrdered, SM_PRESENT,         motor->preAmpOnOrdered);
+    IINVOKE(preAmpOnOrdered, SM_NOT_PRESENT,     motor->off);
+    IINVOKE(preAmpOnOrdered, SM_PREA_ON,         motor->preAmpOnOrdered);
+    IINVOKE(preAmpOnOrdered, SM_PREA_OFF,        motor->idle);
+    IINVOKE(preAmpOnOrdered, SM_POWA_ON,         motor->preAmpOnOrdered);
+    IINVOKE(preAmpOnOrdered, SM_POWA_OFF,        motor->preAmpOnOrdered);
+    IINVOKE(preAmpOnOrdered, SM_STATUS_OK,       motor->preAmpOnOrdered);
+    IINVOKE(preAmpOnOrdered, SM_STATUS_ERR,      motor->powered);
+    IINVOKE(preAmpOnOrdered, SM_STATUS_DD,       motor->preAmpOnOrdered);
+    IINVOKE(preAmpOnOrdered, SM_STATUS_ED,       motor->armed);
+    IINVOKE(preAmpOnOrdered, SM_STATUS_EE,       motor->off);
+    IINVOKE(preAmpOnOrdered, SM_STATUS_DE,       motor->off);
+    IINVOKE(preAmpOnOrdered, SM_STATUS_TEMP,     motor->off);
+    IINVOKE(preAmpOnOrdered, SM_PING_INQ,        motor->preAmpOnOrdered);
+    IINVOKE(preAmpOnOrdered, SM_PING_TIMEOUT,    motor->powered);
+    IINVOKE(preAmpOnOrdered, SM_DEVICE_ERR,      motor->off);
+    IINVOKE(preAmpOnOrdered, SM_PARAM_INQ,       motor->preAmpOnOrdered);
+    IINVOKE(preAmpOnOrdered, SM_TEMP_INQ,        motor->preAmpOnOrdered);
+    IINVOKE(preAmpOnOrdered, SM_PARAM_TIMEOUT,   motor->preAmpOnOrdered);
+    IINVOKE(preAmpOnOrdered, SM_UART_ERR,        motor->off);
 }
 
 static void test_preAmpOffOrdered(void **state)
 {
     Motor* motor = *state;
 
-    IINVOKE(preAmpOffOrdered, SM_START,         motor->preAmpOffOrdered);
-    IINVOKE(preAmpOffOrdered, SM_STOP,          motor->off);
-    IINVOKE(preAmpOffOrdered, SM_TIMEOUT,       motor->idle);
-    IINVOKE(preAmpOffOrdered, SM_PRESENT,       motor->preAmpOffOrdered);
-    motor->run = false;
-    IINVOKE(preAmpOffOrdered, SM_NOT_PRESENT,   motor->off);
-    motor->run = true;
-    IINVOKE(preAmpOffOrdered, SM_NOT_PRESENT,   motor->starting);
-    IINVOKE(preAmpOffOrdered, SM_PREA_ON,       motor->preAmpOnOrdered);
-    IINVOKE(preAmpOffOrdered, SM_PREA_OFF,      motor->preAmpOffOrdered);
-    IINVOKE(preAmpOffOrdered, SM_POWA_ON,       motor->preAmpOffOrdered);
-    IINVOKE(preAmpOffOrdered, SM_POWA_OFF,      motor->preAmpOffOrdered);
-    IINVOKE(preAmpOffOrdered, SM_STATUS_OK,     motor->preAmpOffOrdered);
-    IINVOKE(preAmpOffOrdered, SM_STATUS_ERR,    motor->powered);
-    IINVOKE(preAmpOffOrdered, SM_STATUS_DD,     motor->idle);
-    IINVOKE(preAmpOffOrdered, SM_STATUS_ED,     motor->preAmpOffOrdered);
-    IINVOKE(preAmpOffOrdered, SM_STATUS_EE,     motor->off);
-    IINVOKE(preAmpOffOrdered, SM_STATUS_DE,     motor->off);
-    IINVOKE(preAmpOffOrdered, SM_STATUS_TEMP,   motor->off);
-    IINVOKE(preAmpOffOrdered, SM_PING_INQ,      motor->preAmpOffOrdered);
-    IINVOKE(preAmpOffOrdered, SM_PING_TIMEOUT,  motor->powered);
-    IINVOKE(preAmpOffOrdered, SM_DEVICE_ERR,    motor->off);
-    IINVOKE(preAmpOffOrdered, SM_PARAM_INQ,     motor->preAmpOffOrdered);
-    IINVOKE(preAmpOffOrdered, SM_TEMP_INQ,      motor->preAmpOffOrdered);
-    IINVOKE(preAmpOffOrdered, SM_PARAM_TIMEOUT, motor->preAmpOffOrdered);
-    IINVOKE(preAmpOffOrdered, SM_UART_ERR,      motor->off);
+    IINVOKE(preAmpOffOrdered, SM_START,           motor->preAmpOffOrdered);
+    IINVOKE(preAmpOffOrdered, SM_STOP,            motor->off);
+    IINVOKE(preAmpOffOrdered, SM_BRINGUP_TIMEOUT, motor->preAmpOffOrdered);
+    IINVOKE(preAmpOffOrdered, SM_TIMEOUT,         motor->idle);
+    IINVOKE(preAmpOffOrdered, SM_PRESENT,         motor->preAmpOffOrdered);
+    motor->run = false;  
+    IINVOKE(preAmpOffOrdered, SM_NOT_PRESENT,     motor->off);
+    motor->run = true;  
+    IINVOKE(preAmpOffOrdered, SM_NOT_PRESENT,     motor->starting);
+    IINVOKE(preAmpOffOrdered, SM_PREA_ON,         motor->preAmpOnOrdered);
+    IINVOKE(preAmpOffOrdered, SM_PREA_OFF,        motor->preAmpOffOrdered);
+    IINVOKE(preAmpOffOrdered, SM_POWA_ON,         motor->preAmpOffOrdered);
+    IINVOKE(preAmpOffOrdered, SM_POWA_OFF,        motor->preAmpOffOrdered);
+    IINVOKE(preAmpOffOrdered, SM_STATUS_OK,       motor->preAmpOffOrdered);
+    IINVOKE(preAmpOffOrdered, SM_STATUS_ERR,      motor->powered);
+    IINVOKE(preAmpOffOrdered, SM_STATUS_DD,       motor->idle);
+    IINVOKE(preAmpOffOrdered, SM_STATUS_ED,       motor->preAmpOffOrdered);
+    IINVOKE(preAmpOffOrdered, SM_STATUS_EE,       motor->off);
+    IINVOKE(preAmpOffOrdered, SM_STATUS_DE,       motor->off);
+    IINVOKE(preAmpOffOrdered, SM_STATUS_TEMP,     motor->off);
+    IINVOKE(preAmpOffOrdered, SM_PING_INQ,        motor->preAmpOffOrdered);
+    IINVOKE(preAmpOffOrdered, SM_PING_TIMEOUT,    motor->powered);
+    IINVOKE(preAmpOffOrdered, SM_DEVICE_ERR,      motor->off);
+    IINVOKE(preAmpOffOrdered, SM_PARAM_INQ,       motor->preAmpOffOrdered);
+    IINVOKE(preAmpOffOrdered, SM_TEMP_INQ,        motor->preAmpOffOrdered);
+    IINVOKE(preAmpOffOrdered, SM_PARAM_TIMEOUT,   motor->preAmpOffOrdered);
+    IINVOKE(preAmpOffOrdered, SM_UART_ERR,        motor->off);
 }
 
 static void test_armed(void **state)
 {
     Motor* motor = *state;
 
-    IINVOKE(armed, SM_START,         motor->armed);
-    IINVOKE(armed, SM_STOP,          motor->off);
-    //IINVOKE(armed, SM_TIMEOUT,       motor->armed);
-    IINVOKE(armed, SM_PRESENT,       motor->armed);
-    motor->run = false;
-    IINVOKE(armed, SM_NOT_PRESENT,   motor->off);
-    motor->run = true;
-    IINVOKE(armed, SM_NOT_PRESENT,   motor->starting);
-    IINVOKE(armed, SM_PREA_ON,       motor->armed);
-    IINVOKE(armed, SM_PREA_OFF,      motor->preAmpOffOrdered);
-    IINVOKE(armed, SM_POWA_ON,       motor->powAmpOnOrdered);
-    IINVOKE(armed, SM_POWA_OFF,      motor->armed);
-    IINVOKE(armed, SM_STATUS_OK,     motor->armed);
-    IINVOKE(armed, SM_STATUS_ERR,    motor->powered);
-    IINVOKE(armed, SM_STATUS_DD,     motor->powered);
-    IINVOKE(armed, SM_STATUS_ED,     motor->armed);
-    IINVOKE(armed, SM_STATUS_EE,     motor->active);
-    IINVOKE(armed, SM_STATUS_DE,     motor->off);
-    IINVOKE(armed, SM_STATUS_TEMP,   motor->off);
-    IINVOKE(armed, SM_PING_INQ,      motor->armed);
-    IINVOKE(armed, SM_PING_TIMEOUT,  motor->powered);
-    IINVOKE(armed, SM_DEVICE_ERR,    motor->off);
-    IINVOKE(armed, SM_PARAM_INQ,     motor->armed);
-    IINVOKE(armed, SM_TEMP_INQ,      motor->armed);
-    IINVOKE(armed, SM_PARAM_TIMEOUT, motor->armed);
-    IINVOKE(armed, SM_UART_ERR,      motor->off);
+    IINVOKE(armed, SM_START,           motor->armed);
+    IINVOKE(armed, SM_STOP,            motor->off);
+    IINVOKE(armed, SM_BRINGUP_TIMEOUT, motor->armed);
+    IINVOKE(armed, SM_TIMEOUT,         motor->armed);
+    IINVOKE(armed, SM_PRESENT,         motor->armed);
+    IINVOKE(armed, SM_NOT_PRESENT,     motor->off);
+    IINVOKE(armed, SM_PREA_ON,         motor->preAmpOnOrdered);
+    IINVOKE(armed, SM_PREA_OFF,        motor->preAmpOffOrdered);
+    IINVOKE(armed, SM_POWA_ON,         motor->powAmpOnOrdered);
+    IINVOKE(armed, SM_POWA_OFF,        motor->armed);
+    IINVOKE(armed, SM_STATUS_OK,       motor->armed);
+    IINVOKE(armed, SM_STATUS_ERR,      motor->powered);
+    IINVOKE(armed, SM_STATUS_DD,       motor->powered);
+    IINVOKE(armed, SM_STATUS_ED,       motor->armed);
+    IINVOKE(armed, SM_STATUS_EE,       motor->off);
+    IINVOKE(armed, SM_STATUS_DE,       motor->off);
+    IINVOKE(armed, SM_STATUS_TEMP,     motor->off);
+    IINVOKE(armed, SM_PING_INQ,        motor->armed);
+    IINVOKE(armed, SM_PING_TIMEOUT,    motor->powered);
+    IINVOKE(armed, SM_DEVICE_ERR,      motor->off);
+    IINVOKE(armed, SM_PARAM_INQ,       motor->armed);
+    IINVOKE(armed, SM_TEMP_INQ,        motor->armed);
+    IINVOKE(armed, SM_PARAM_TIMEOUT,   motor->armed);
+    IINVOKE(armed, SM_UART_ERR,        motor->off);
 }
 
 static void test_powAmpOnOrdered(void **state)
 {
-    Motor* motor = *state;
+    IINVOKE(powAmpOnOrdered, SM_START,           motor->powAmpOnOrdered);
+    IINVOKE(powAmpOnOrdered, SM_STOP,            motor->off);
+    IINVOKE(powAmpOnOrdered, SM_BRINGUP_TIMEOUT, motor->powAmpOnOrdered);
+    IINVOKE(powAmpOnOrdered, SM_TIMEOUT,         motor->armed);
+    IINVOKE(powAmpOnOrdered, SM_PRESENT,         motor->powAmpOnOrdered);
+    IINVOKE(powAmpOnOrdered, SM_NOT_PRESENT,     motor->off);
+    IINVOKE(powAmpOnOrdered, SM_PREA_ON,         motor->preAmpOnOrdered);
+    IINVOKE(powAmpOnOrdered, SM_PREA_OFF,        motor->preAmpOffOrdered);
+    IINVOKE(powAmpOnOrdered, SM_POWA_ON,         motor->powAmpOnOrdered);
+    IINVOKE(powAmpOnOrdered, SM_POWA_OFF,        motor->armed);
+    IINVOKE(powAmpOnOrdered, SM_STATUS_OK,       motor->powAmpOnOrdered);
+    IINVOKE(powAmpOnOrdered, SM_STATUS_ERR,      motor->powered);
+    IINVOKE(powAmpOnOrdered, SM_STATUS_DD,       motor->powered);
+    IINVOKE(powAmpOnOrdered, SM_STATUS_ED,       motor->powAmpOnOrdered);
+    IINVOKE(powAmpOnOrdered, SM_STATUS_EE,       motor->active);
+    IINVOKE(powAmpOnOrdered, SM_STATUS_DE,       motor->off);
+    IINVOKE(powAmpOnOrdered, SM_STATUS_TEMP,     motor->off);
+    IINVOKE(powAmpOnOrdered, SM_PING_INQ,        motor->powAmpOnOrdered);
+    IINVOKE(powAmpOnOrdered, SM_PING_TIMEOUT,    motor->powered);
+    IINVOKE(powAmpOnOrdered, SM_DEVICE_ERR,      motor->off);
+    IINVOKE(powAmpOnOrdered, SM_PARAM_INQ,       motor->powAmpOnOrdered);
+    IINVOKE(powAmpOnOrdered, SM_TEMP_INQ,        motor->powAmpOnOrdered);
+    IINVOKE(powAmpOnOrdered, SM_PARAM_TIMEOUT,   motor->powAmpOnOrdered);
+    IINVOKE(powAmpOnOrdered, SM_UART_ERR,        motor->off);
 }
 
 static void test_powAmpOffOrdered(void **state)
